@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Conversor de Moedas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    button {
+      padding: 0.6rem 1rem;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .resultado {
+      margin-top: 1rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .erro {
+      color: red;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Conversor de Moedas</h2>
+
+    <div class="form-group">
+      <label for="valor">Valor:</label>
+      <input type="number" id="valor" placeholder="Digite o valor" />
+    </div>
+
+    <div class="form-group">
+      <label for="moedaOrigem">De:</label>
+      <select id="moedaOrigem">
+        <option value="BRL">Real (BRL)</option>
+        <option value="USD">Dólar (USD)</option>
+        <option value="EUR">Euro (EUR)</option>
+    
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="moedaDestino">Para:</label>
+      <select id="moedaDestino">
+        <option value="USD">Dólar (USD)</option>
+        <option value="BRL">Real (BRL)</option>
+        <option value="EUR">Euro (EUR)</option>
+      </select>
+    </div>
+
+    <button id="converter">Converter</button>
+
+    <div class="resultado" id="resultado"></div>
+    <div class="erro" id="erro"></div>
+  </div>
+
+  <script>
+  const btnConverter = document.getElementById('converter');
+  btnConverter.addEventListener('click', () => {
+    const valor = document.getElementById('valor').value;
+    const moedaOrigem = document.getElementById('moedaOrigem').value;
+    const moedaDestino = document.getElementById('moedaDestino').value;
+    const resultadoDiv = document.getElementById('resultado');
+    const erroDiv = document.getElementById('erro');
+    
+    resultadoDiv.textContent = '';
+    erroDiv.textContent = '';
+
+    if (!valor || valor <= 0) {
+      erroDiv.textContent = 'Por favor, insira um valor válido.';
+      return;
+    }
+
+    const apiUrl = `http://127.0.0.1:8000/api/converter/?valor=${valor}&de=${moedaOrigem}&para=${moedaDestino}`;
+
+    // AQUI ESTÁ A CORREÇÃO
+    fetch(apiUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro na requisição: ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.resultado_conversao !== undefined) {
+          resultadoDiv.textContent = `Resultado: ${data.resultado_conversao.toFixed(2)} ${moedaDestino}`;
+        } else if (data.error) {
+          erroDiv.textContent = data.error;
+        } else {
+          erroDiv.textContent = 'Resposta inesperada da API.';
+        }
+      })
+      .catch(error => {
+        erroDiv.textContent = 'Erro: ' + error.message;
+      });
+  });
+</script>
+</body>
+</html>
