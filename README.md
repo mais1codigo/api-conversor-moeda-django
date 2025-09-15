@@ -18,7 +18,7 @@ Este é um projeto estuantil e feito como pratica individual para meu conhecimen
 
 Antes de começar, você vai precisar ter instalado em sua máquina:
 - [Python 3.x](https://www.python.org/downloads/)
-- [Pip](https://pip.pypa.io/en/stable/installation/) (geralmente já vem com o Python)
+- [Pip](https://pip.pypa.io/en/stable/installation/)
 - [Git](https://git-scm.com/downloads)
 
 ## 🚀 Como Rodar o Projeto
